@@ -158,7 +158,7 @@ if uploaded_file:
                     # Exibe mensagem de desejabilidade na UI
                     st.info(des_out["mensagem"])
                     if des_out["aplica_desejabilidade"] and des_out["resultado_df"] is not None:
-                        st.caption("Top resultados no intervalo de desejabilidade:")
+                        st.subheader("Top resultados no intervalo de desejabilidade:")
                         # O resultado_df é uma lista de dicts (serializável), converte para DF para exibição na UI
                         st.dataframe(pd.DataFrame(des_out["resultado_df"])) 
 

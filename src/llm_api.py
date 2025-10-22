@@ -23,7 +23,7 @@ llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash", 
     google_api_key=api_key_gemini,
     # Define o limite máximo de tokens de saída para o relatório detalhado (15.000)
-    max_output_tokens=15000, 
+    max_output_tokens=20000, 
     # Temperatura baixa (0.2) para garantir que a saída seja técnica e pouco criativa
     temperature=0.2 
 )
@@ -70,7 +70,10 @@ def generate_final_prompt(analises):
 
                 Fórmula do modelo (somente se houver modelo):
 
-                Mostrar fórmula em uma única linha legível com intercepto e termos (coef * termo).
+                Mostrar fórmula em uma **única linha legível**, utilizando o **bloco de código `inline`** (``` `fórmula` ```) ou, preferencialmente, o bloco de código simples (` ``` `) para destacar a equação:
+                ```
+                Y = Intercepto + (coef_1 * Termo_1) + ...
+                ```
 
                 Se desejabilidade.modelo_funcao_py existir, exibir bloco de código com essa função.
 
@@ -85,8 +88,13 @@ def generate_final_prompt(analises):
                 a) Mostrar mensagem.
                 b) Se houver, listar "Espaços de busca" em tabela: Variável | min | max | n.
                 c) Se houver, exibir blocos de código de modelo_funcao_py e desejabilidade_funcao_py.
-                d) Se houver resultados, exibir TABELA com no MÁXIMO 20 linhas, ordenada como fornecida,
-                mostrando colunas originais + "<target>_previsto" + "desejabilidade" (ou nome presente no JSON).
+                d) [CENÁRIOS OTIMIZADOS] **NÃO exiba a tabela com o top 20.** Em vez disso, analise a lista de "resultados" (que já está ordenada por Desejabilidade) e **apresente 3 cenários de otimização distintos**, priorizando os melhores índices de desejabilidade em cada categoria:
+                    
+                    1. **Cenário Econômico (Baixo Custo):** Selecione o ponto com **maior desejabilidade** que utilize os **menores valores** de tempo de processo/energia (ex: `Tempo_Ultrassom_min` e `Tempo_shaker_min`).
+                    
+                    2. **Cenário Intermediário:** Selecione o ponto com **desejabilidade máxima** que possua valores de entrada (tempo/temperatura) dentro da **faixa média** dos "Espaços de busca".
+                    
+                    3. **Cenário de Alta Performance (Alto Custo):** Selecione o ponto com **desejabilidade máxima** que utilize os **maiores valores** de fatores de custo/tempo.
 
                 NUNCA inventar valores/colunas. Manter nomes exatamente como no JSON.
         """)
