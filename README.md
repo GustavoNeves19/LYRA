@@ -58,8 +58,7 @@ Esse modelo auxilia a **encontrar o ponto ideal de operação**.
 Uma **equação matemática concisa** que permite **prever o valor da variável de saída (Y)** com base em quaisquer valores das **variáveis de entrada (X)**.
 #### 🧮 Fórmula do Modelo Ajustado
 
-$$\
-\hat{Y} = 45.1347 
+$$ \hat{Y} = 45.1347 
 - 0.2010\,(\text{tempo\_shaker}) 
 + 0.0010\,(\text{tempo\_shaker}^2) 
 - 2.9841\,(\text{tempo\_ultrassom}) 
