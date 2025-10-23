@@ -58,7 +58,8 @@ Esse modelo auxilia a **encontrar o ponto ideal de operação**.
 Uma **equação matemática concisa** que permite **prever o valor da variável de saída (Y)** com base em quaisquer valores das **variáveis de entrada (X)**.
 #### 🧮 Fórmula do Modelo Ajustado
 
-$$ \hat{Y} = 45.1347 
+$$
+\hat{Y} = 45.1347 
 - 0.2010\,(\text{tempo\_shaker}) 
 + 0.0010\,(\text{tempo\_shaker}^2) 
 - 2.9841\,(\text{tempo\_ultrassom}) 
@@ -66,6 +67,7 @@ $$ \hat{Y} = 45.1347
 + 0.0147\,(\text{tempo\_shaker} \times \text{tempo\_ultrassom}) 
 - 0.0134\,(\text{tempo\_shaker} \times \text{temperatura})
 $$
+
 
 ![Imagem do Modelo Polinomial do Planejamento M1](./img/Modelo-Polinomial.png)
 
