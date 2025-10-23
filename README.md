@@ -30,19 +30,70 @@ O objetivo principal do LYRA é otimizar o fluxo de trabalho de cientistas de da
 
 O LYRA é especializado em projetos de Planejamento de Experimentos (DOE) e Regressão. A seguir, detalhamos os processos estatísticos e os modelos utilizados pelo Agente Inteligente:
 
-### Modelo Polinomial (Regressão)
+### 📊 Gráfico de Pareto (Visualização de Significância)
 
-* **O que é:** Um modelo de regressão é ajustado para descrever a relação entre variáveis de entrada (fatores) e uma variável de saída (resposta). O modelo polinomial é uma extensão da regressão linear que inclui termos de ordem superior, como termos quadráticos e de interação, para modelar curvaturas e efeitos combinados.
-* **Cenário de Aplicação:** Ideal para otimização de processos, onde o resultado (rendimento, qualidade) é influenciado por múltiplos fatores (tempo, temperatura, concentração). Ajuda a encontrar o ponto ideal de operação.
-* **Resultado Esperado:** Uma equação matemática concisa que permite prever o valor da variável de saída (Y) dados quaisquer valores das variáveis de entrada (X).
+Uma representação gráfica da **ANOVA** que ilustra a contribuição relativa de cada fator (termo) para a variação total do modelo.  
+Ele ordena os termos pela magnitude da **Soma dos Quadrados (sum_sq)**, destacando o princípio de **Pareto** — poucos fatores são responsáveis pela maior parte do efeito.
 
-### Análise de Variância (ANOVA)
+#### 💡 Cenário de Aplicação  
+Usado para a **Seleção de Features**, permitindo ao usuário identificar rapidamente quais fatores são mais importantes e quais podem ser descartados (**redução do modelo**).
 
-* **O que é:** É o método estatístico usado para decompor a variabilidade total nos dados, isolando a contribuição de cada termo do modelo (fatores, interações, quadráticos). O LYRA a utiliza para determinar quais fatores são estatisticamente **significativos** para a variável de saída.
-* **Cenário de Aplicação:** Usada imediatamente após o ajuste do Modelo Polinomial para testar a validade estatística do modelo. O **Gráfico de Pareto** (visualização inicial) é uma representação da ANOVA que destaca a magnitude da contribuição de cada fator.
-* **Resultado Esperado:** Uma tabela que lista a soma dos quadrados, graus de liberdade (gl), o valor F e, criticamente, o **p-valor** de cada termo. Um p-valor baixo (tipicamente $\leq 0.10$) indica que o termo é estatisticamente significativo.
+#### 🎯 Resultado Esperado  
+Um **gráfico de barras horizontais** onde termos significativos (p-valor ≤ 0.10) são destacados com uma cor diferente e uma **linha de corte (Corte de Significância)** é exibida.
 
-### Métricas de Qualidade do Modelo (R², LoF)
+![Imagem de Gráfico de Pareto com linha de corte e barras coloridas](./img/Grafico-Pareto.png)
+
+
+## 📈 Modelo Polinomial (Regressão)
+
+#### 🔍 O que é  
+Um **modelo de regressão** é ajustado para descrever a relação entre variáveis de entrada (**fatores**) e uma variável de saída (**resposta**).  
+O **modelo polinomial** é uma extensão da regressão linear que inclui termos de ordem superior, como **termos quadráticos e de interação**, para modelar **curvaturas** e **efeitos combinados**.
+
+#### 💡 Cenário de Aplicação  
+Ideal para **otimização de processos**, onde o resultado (por exemplo, rendimento ou qualidade) é influenciado por múltiplos fatores — como **tempo**, **temperatura** e **concentração**.  
+Esse modelo auxilia a **encontrar o ponto ideal de operação**.
+
+#### 🎯 Resultado Esperado  
+Uma **equação matemática concisa** que permite **prever o valor da variável de saída (Y)** com base em quaisquer valores das **variáveis de entrada (X)**.
+#### 🧮 Fórmula do Modelo Ajustado
+
+$$\
+\hat{Y} = 45.1347 
+- 0.2010\,(\text{tempo\_shaker}) 
++ 0.0010\,(\text{tempo\_shaker}^2) 
+- 2.9841\,(\text{tempo\_ultrassom}) 
++ 2.2206\,(\text{temperatura}) 
++ 0.0147\,(\text{tempo\_shaker} \times \text{tempo\_ultrassom}) 
+- 0.0134\,(\text{tempo\_shaker} \times \text{temperatura})
+$$
+
+![Imagem do Modelo Polinomial do Planejamento M1](./img/Modelo-Polinomial.png)
+
+
+
+## 📊 Análise de Variância (ANOVA)
+
+### 🔍 O que é  
+É o **método estatístico** usado para decompor a variabilidade total nos dados, isolando a contribuição de cada termo do modelo (**fatores, interações, quadráticos**).  
+O **LYRA** utiliza a ANOVA para determinar quais fatores são estatisticamente **significativos** para a variável de saída.
+
+### 💡 Cenário de Aplicação  
+Aplicada **imediatamente após o ajuste do Modelo Polinomial**, a ANOVA testa a **validade estatística do modelo**.  
+O **Gráfico de Pareto** é uma representação visual inicial dessa análise, destacando a **magnitude da contribuição de cada fator**.
+
+### 🎯 Resultado Esperado  
+Uma **tabela de resultados** contendo:  
+- **Soma dos Quadrados (SQ)**  
+- **Graus de Liberdade (gl)**  
+- **Valor F**  
+- **p-valor** de cada termo  
+
+Um **p-valor baixo (≤ 0.10)** indica que o termo é **estatisticamente significativo**.
+
+![Imagem da ANOVA do  Planejamento M1](./img/Anova.png)
+
+## Métricas de Qualidade do Modelo (R², LoF)
 
 O LYRA calcula várias métricas para avaliar a qualidade preditiva do modelo final:
 
@@ -52,11 +103,20 @@ O LYRA calcula várias métricas para avaliar a qualidade preditiva do modelo fi
 | **Significância** | Baseado no teste F global. Indica se o modelo, como um todo, tem poder preditivo relevante. | O resultado deve ser **`True`** (Significativo). |
 | **Predição Ajustada (LoF)** | *Lack-of-Fit* (LoF). Mede se o modelo é capaz de prever corretamente os dados em relação ao erro puro (Pure Error - PE). | O resultado deve ser **`True`** (Predição Ajustada), indicando que o modelo não falha em se ajustar à curvatura dos dados. |
 
-### Desejabilidade Global (Otimização)
+## 🎯 Desejabilidade Global (Otimização)
 
-* **O que é:** A Desejabilidade é uma técnica de otimização multivariada que transforma as respostas de múltiplas variáveis em um único índice. O LYRA realiza uma **Desejabilidade Unidirecional** (busca por valores mais altos) sobre a predição do modelo.
-* **Cenário de Aplicação:** Usada para encontrar a combinação de fatores de entrada que maximiza a resposta (rendimento) dentro de um intervalo de desejabilidade pré-definido pelo usuário.
-* **Resultado Esperado:** Uma tabela de **combinações de fatores** (ex: tempo, temperatura) que resultam nos maiores valores de Desejabilidade, indicando o ponto de operação ideal do processo.
+### 🔍 O que é  
+A **Desejabilidade** é uma técnica de **otimização multivariada** que transforma as respostas de múltiplas variáveis em um **único índice de desempenho**.  
+O **LYRA** realiza uma **Desejabilidade Unidirecional** — ou seja, busca por **valores máximos** da variável de resposta com base nas predições do modelo.
+
+### 💡 Cenário de Aplicação  
+Aplicada para **encontrar a combinação ideal de fatores de entrada** (por exemplo, tempo e temperatura) que **maximiza a resposta** dentro de um **intervalo de desejabilidade pré-definido pelo usuário**.  
+É uma etapa essencial na **fase final de otimização** do processo.
+
+### 📈 Resultado Esperado  
+Uma **tabela com as combinações de fatores** que produzem os **maiores valores de desejabilidade**, indicando o **ponto de operação ideal** do processo.  
+Esses resultados servem como base para **decisões experimentais e ajustes operacionais**.
+
 
 ---
 
