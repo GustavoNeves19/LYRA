@@ -58,7 +58,7 @@ A variável `Temperatura_C` é a mais proeminente, mas a contribuição total é
 
 ![Tabela ANOVA CFT: Analise-Inicial--IA-CFT.png](../img/Planejamento%20B1/Analise-Inicial--IA-CFT.png)
 
-* **Insight da IA:** A ANOVA completa mostra que **nenhum termo** (principal, quadrático ou de interação) alcançou significância ($\text{p-valor} \leq 0.10$). O $\text{p-valor}$ mais próximo é o de $\text{Temperatura\_C}$ (0.122), ainda assim não significativo.
+* **Insight da IA:** A ANOVA completa mostra que **nenhum termo** (principal, quadrático ou de interação) alcançou significância (p-valor $\leq 0.10$). O p-valor mais próximo é o de Temperatura\_C (0.122), ainda assim não significativo.
 * **Consequência:** O modelo não tem base estatística para ser gerado.
 
 | Métrica | Valor | *Insight de Risco* |
@@ -81,8 +81,8 @@ A variável `Temperatura_C` é a mais proeminente, mas a contribuição total é
 
 ![Fórmula e Métricas FT: Analise-modelo-IA-FT.png](../img/Planejamento%20B1/Analise-modelo-IA-FT.png)
 
-* **Insight da IA:** O único termo significativo é a $\text{Temperatura\_C}$ ($\text{p-valor} = 0.055$). O $\text{R}^2$ de **9.16%** indica que $\text{Temperatura\_C}$ explica menos de 10% da variação total.
-* **Conclusão da IA:** A regressão é *Não Significativa* (`False`) no teste F global, apesar de o termo $\text{Temperatura\_C}$ ser individualmente significativo.
+* **Insight da IA:** O único termo significativo é a Temperatura\_C (p-valor = 0.055). O R² de **9.16%** indica que Temperatura\_C explica menos de 10% da variação total.
+* **Conclusão da IA:** A regressão é *Não Significativa* (`False`) no teste F global, apesar de o termo Temperatura\_C ser individualmente significativo.
 
 #### 3.4 Análise Crítica: `ABTS_umol_TE_g` ($\text{R}^2 = 17.11\%$)
 
@@ -90,8 +90,8 @@ A variável `Temperatura_C` é a mais proeminente, mas a contribuição total é
 
 ![Fórmula e Métricas ABTS: Analise-Modelo-IA-ABTS.png](../img/Planejamento%20B1/Analise-Modelo-IA-ABTS.png)
 
-* **Insight da IA:** Esta resposta apresenta o maior número de termos significativos (incluindo $\text{Tempo\_Ultrassom\_min}$ e $\text{Temperatura\_C}$), mas ainda assim resulta em um $\text{R}^2$ de apenas **17.11%**.
-* **Métricas de Risco:** O modelo é *Não Significativo* (`False`) e a $\text{Predicao Ajustada (LoF)}$ falhou (`False`). O LYRA confirma que o modelo é **inconfiável** e **não preditivo**.
+* **Insight da IA:** Esta resposta apresenta o maior número de termos significativos (incluindo Tempo\_Ultrassom\_min e Temperatura\_C), mas ainda assim resulta em um R² de apenas **17.11%**.
+* **Métricas de Risco:** O modelo é *Não Significativo* (`False`) e a Predicao Ajustada (LoF) falhou (`False`). O LYRA confirma que o modelo é **inconfiável** e **não preditivo**.
 
 ---
 
@@ -103,5 +103,5 @@ O Agente de IA **bloqueia a Otimização** (Desejabilidade) em todas as variáve
 
 O **Planejamento B1** é categorizado como um **Cenário de Risco Crítico e Falha Generalizada de Preditividade**.
 
-* **Diagnóstico Final da IA:** A análise detalhada das ANOVAs revela que, mesmo onde há significância isolada (como em $\text{FT\_mg\_QE\_g}$ e $\text{ABTS\_umol\_TE\_g}$), a contribuição percentual dos fatores para a variação total do processo é negligenciável ($\text{R}^2$ máximo de 17.11%).
+* **Diagnóstico Final da IA:** A análise detalhada das ANOVAs revela que, mesmo onde há significância isolada (como em FT\_mg\_QE\_g e ABTS\_umol\_TE\_g), a contribuição percentual dos fatores para a variação total do processo é negligenciável (R² máximo de 17.11%).
 * **Recomendação do Sistema:** O sistema LYRA confirma que os fatores e/ou os limites escolhidos neste planejamento experimental **não são adequados** para modelar as respostas de maneira preditiva. **Recomenda-se uma revisão completa do planejamento,** focando na ampliação dos limites dos fatores ou na inclusão de novas variáveis que possam explicar a variação das respostas.
