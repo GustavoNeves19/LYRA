@@ -2,11 +2,8 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import json
-import numpy as np  # CORREÇÃO: Necessário para np.nan e np.float64
+import numpy as np  
 
-# =======================================================
-# NOVO: IMPORTAÇÕES DO MÓDULO SRC/
-# =======================================================
 
 # 1. Funções do LLM (Agente Inteligente)
 from src.llm_api import generate_final_prompt, get_llm_response
@@ -19,7 +16,6 @@ from src.analysis_pipeline import (
     ajustar_modelo, 
     avaliar_modelo_anova, 
     run_global_desejabilidade_if_applicable,
-    # REMOVIDO: to_serializable (Não é usada diretamente neste escopo)
 )
 
 # -------------------------------------------------------
@@ -63,7 +59,6 @@ if uploaded_file:
         st.dataframe(df.head())
 
         st.subheader("Variáveis Identificadas")
-        # CORREÇÃO DE EXIBIÇÃO: As variáveis já são listas
         st.write("Variáveis Independentes:", independent_vars) 
         st.write("Variáveis Dependentes:", dependent_vars)
 
@@ -89,14 +84,13 @@ if uploaded_file:
                     f"{independent_vars[1]}:{independent_vars[2]}",
                 ]
                 
-                # --- Escopo Corrigido: Inicialização de Variáveis ---
+                # --- Inicialização de Variáveis ---
                 # Garante que essas variáveis existam antes do bloco if/else
                 summary = "Não foram encontradas features significativas para a variável. Nenhum modelo foi gerado."
                 metricas = {}
                 desejabilidade_block = {}
                 
                 # --- Pareto (modelo completo) ---
-                # CHAMADA ATUALIZADA: ajustar_modelo e plot_pareto de src.analysis_pipeline
                 modelo_completo, anova_sorted = ajustar_modelo(df, target_var, features_completas)
                 
                 # Gera e exibe o gráfico (plot_pareto usa o modelo para criar o gráfico)
@@ -109,7 +103,6 @@ if uploaded_file:
 
 
                 # --- Seleção de features significativas ---
-                # CHAMADA ATUALIZADA: selecionar_features_significativas de src.analysis_pipeline
                 significantes, nao_significantes, anova_df_temp = selecionar_features_significativas(modelo_completo)
 
                 # --- Serialização da ANOVA (Modelo Completo/Pareto) ---
@@ -141,7 +134,6 @@ if uploaded_file:
                     metricas, anova_completa_final, params_summary = avaliar_modelo_anova(modelo_reduzido, df, target_var)
 
                     # --- Desejabilidade (dinâmica) ---
-                    # CHAMADA ATUALIZADA: run_global_desejabilidade_if_applicable de src.analysis_pipeline
                     des_out = run_global_desejabilidade_if_applicable(
                         modelo_reduzido=modelo_reduzido,
                         df=df,
@@ -194,10 +186,10 @@ if uploaded_file:
             st.header("3. Geração do Relatório com IA")
             st.info("As análises foram concluídas. O agente está construindo o relatório final.")
 
-            # CHAMADA ATUALIZADA: generate_final_prompt e get_llm_response de src.llm_api
+            # generate_final_prompt e get_llm_response de src.llm_api
             prompt_template = generate_final_prompt(resultados_analises)
 
-            # ⚠️ CORREÇÃO AQUI: Garante que o spinner e a mensagem de sucesso sejam controlados
+            # Garante que o spinner e a mensagem de sucesso sejam controlados
             with st.spinner("Aguarde. O Agente LYRA está processando e escrevendo o relatório com alta complexidade..."):
                 response_text = get_llm_response(prompt_template, resultados_analises)
 
