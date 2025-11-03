@@ -108,6 +108,10 @@ Para as respostas com $R^2 < 50\%$ (`DPPH_umol_TE_g`, `ABTS_umol_TE_g` e `FT_mg_
 
 ${DPPH\_umol\_TE\_g} = 170,6675 - 1,3533 \times \text{Tempo\_Ultrassom\_min} + 1,1115 \times \text{Temperatura\_C}$
 
+$\mathrm{DPPH\_umol\_TE\_g} = 170,6675 - 1,3533 \times \mathrm{Tempo\_Ultrassom\_min} + 1,1115 \times \mathrm{Temperatura\_C}$
+
+$DPPH_{umol\_TE\_g} = 170,6675 - 1,3533 \times \text{Tempo}_{Ultrassom\_min} + 1,1115 \times \text{Temperatura}_{C}$
+
 
 #### **B) Análise `ABTS_umol_TE_g` ($R^2 = 22.93\%$)**
 
