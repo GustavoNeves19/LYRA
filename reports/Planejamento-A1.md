@@ -105,7 +105,8 @@ Para as respostas com $R^2 < 50\%$ (`DPPH_umol_TE_g`, `ABTS_umol_TE_g` e `FT_mg_
 ![IA-DPPH](../img/Planejamento-A1/Modelo-IA-DPPH.png)
 
 * **Ação do LYRA:** Devido ao baixo $R^2$, a **Desejabilidade não foi executada**, e o modelo final foi simplificado para:
-    $$\text{DPPH\_umol\_TE\_g} = 170.6675 - 1.3533 \times \text{Tempo\_Ultrassom\_min} + 1.1115 \times \text{Temperatura\_C}$$
+
+    ${DPPH\_umol\_TE\_g} = 170.6675 - 1.3533 \times \text{Tempo\_Ultrassom\_min} + 1.1115 \times \text{Temperatura\_C}$
 
 #### **B) Análise `ABTS_umol_TE_g` ($R^2 = 22.93\%$)**
 
