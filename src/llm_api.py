@@ -23,7 +23,7 @@ llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash", 
     google_api_key=api_key_gemini,
     # Define o limite máximo de tokens de saída para o relatório detalhado (15.000)
-    max_output_tokens=20000, 
+    max_output_tokens=25000, 
     # Temperatura baixa (0.2) para garantir que a saída seja técnica e pouco criativa
     temperature=0.2 
 )

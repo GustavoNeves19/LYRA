@@ -196,13 +196,21 @@ if uploaded_file:
 
             # CHAMADA ATUALIZADA: generate_final_prompt e get_llm_response de src.llm_api
             prompt_template = generate_final_prompt(resultados_analises)
-            
-            with st.spinner("Aguarde. O Agente LYRA está processando e escrevendo o relatório com alta complexidade..."):
-                 response_text = get_llm_response(prompt_template, resultados_analises)
 
-            st.success("Relatório Concluído!")
+            # ⚠️ CORREÇÃO AQUI: Garante que o spinner e a mensagem de sucesso sejam controlados
+            with st.spinner("Aguarde. O Agente LYRA está processando e escrevendo o relatório com alta complexidade..."):
+                response_text = get_llm_response(prompt_template, resultados_analises)
+
+            # A MENSAGEM FINAL É EXIBIDA APÓS O SPINNER
+            if response_text and not response_text.startswith("Erro:") and not response_text.startswith("AVISO:"):
+                st.success("Relatório Concluído!")
+            else:
+                # Exibe a mensagem de erro ou aviso (retornado pelo llm_api.py)
+                st.error(response_text)
+
 
             st.subheader("Relatório Final Gerado")
+            # O Agente LLM retorna a mensagem de erro/aviso se a API falhar
             st.markdown(response_text) 
 
             st.subheader("Prompt Gerado (Para Verificação)")

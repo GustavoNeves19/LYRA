@@ -47,7 +47,7 @@ Usado para **seleção de features**, ajudando o usuário a identificar rapidame
 #### 🎯 Resultado Esperado  
 Um **gráfico de barras horizontais**, onde termos significativos (p-valor ≤ 0.10) são destacados com cores distintas e uma **linha de corte de significância** é exibida.
 
-![Imagem de Gráfico de Pareto com linha de corte e barras coloridas](./img/Grafico-Pareto.png)
+![Imagem de Gráfico de Pareto com linha de corte e barras coloridas](./img/Main/Grafico-Pareto.png)
 
 ---
 
@@ -70,7 +70,7 @@ $$
 \hat{Y} = 45.13 - 0.20(\text{tempo\_shaker}) + 0.001(\text{tempo\_shaker}^2) - 2.98(\text{tempo\_ultrassom}) + 2.22(\text{temperatura}) + 0.014(\text{tempo\_shaker}\times\text{tempo\_ultrassom}) - 0.013(\text{tempo\_shaker}\times\text{temperatura})
 $$
 
-![Imagem do Modelo Polinomial do Planejamento M1](./img/Modelo-Polinomial.png)
+![Imagem do Modelo Polinomial do Planejamento M1](./img/Main/Modelo-Polinomial.png)
 
 ---
 
@@ -93,7 +93,7 @@ Uma **tabela detalhada** contendo:
 
 Um **p-valor ≤ 0.10** indica significância estatística.
 
-![Imagem da ANOVA do Planejamento M1](./img/Anova.png)
+![Imagem da ANOVA do Planejamento M1](./img/Main/Anova.png)
 
 ---
 
@@ -122,7 +122,16 @@ Aplicada para **encontrar combinações ideais de fatores** (ex: tempo e tempera
 ### 📈 Resultado Esperado  
 Uma **tabela de combinações de fatores** que geram os **maiores índices de desejabilidade**, representando o **ponto ótimo de operação**.
 
-![Imagem da Tabela de Desejabilidade Global](./img/Desejabilidade.png)
+#### 📊 Tabela de Desejabilidade — CFT
+
+| Tempo_Shaker | Tempo_Ultrassom | Temperatura | CFT_previsto | Desejabilidade_CFT |
+| :-----------: | :--------------: | :----------: | :-----------: | :----------------: |
+| 49.28 | 17.14 | 50.00 | 76.92 | 0.84 |
+| 68.57 | 10.00 | 44.28 | 73.92 | 0.79 |
+| 49.28 | 12.85 | 40.00 | 71.00 | 0.75 |
+| 87.85 | 11.42 | 50.00 | 67.98 | 0.70 |
+| 30.00 | 15.71 | 35.71 | 64.98 | 0.65 |
+
 
 ---
 
@@ -149,7 +158,8 @@ Cenário ideal, com **alta qualidade preditiva** e resultados passíveis de otim
   - 🟡 **Intermediário**
   - 🔴 **Alta Performance**
 
-📈 *[Imagem de Relatório de Sucesso (Plano A1) com Cenários de Otimização]*
+
+![Imagem de Relatório de Sucesso (Plano A1) com Cenários de Otimização](./img/Planejamento-A1/Cenários-Desejabilidade.png)
 
 ---
 
@@ -173,7 +183,8 @@ Cenário de **baixa predição**, em que os fatores não foram suficientes para 
   > “O processo de desejabilidade não será executado.”  
   Recomenda-se **revisar o planejamento experimental**.
 
-📉 *[Imagem de Relatório Crítico (Plano B1) com Desejabilidade Bloqueada]*
+
+![Imagem de Relatório Crítico (Plano B1) com Desejabilidade Bloqueada](./img/Planejamento%20B1/Pareto-FT.png)
 
 ---
 
