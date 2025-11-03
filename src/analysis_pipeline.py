@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 
 # ==============================================================================
-# 1. FUNÇÕES DE CARREGAMENTO E LIMPEZA DE DADOS (Migrado de data_loader.py)
+# 1. FUNÇÕES DE CARREGAMENTO E LIMPEZA DE DADOS
 # ==============================================================================
 
 def clean_name(name):
@@ -27,15 +27,11 @@ def load_and_clean_data(file):
     dinamicamente variáveis independentes e dependentes.
     """
     try:
-        # Carrega o arquivo com a primeira linha de dados como cabeçalho
         if file.name.endswith('.xlsx'):
-            # Ajuste: Header é geralmente a 2ª linha (índice 1) para dados de DOE
             df = pd.read_excel(file, header=1)
         else:
             df = pd.read_csv(file, header=1)
         
-        # O DataFrame já está carregado corretamente a partir do header=1
-        # Remoção da primeira linha duplicada, se o arquivo for XLSX/CSV padrão
         df = df.iloc[0:].copy() 
         
         # Limpa os nomes das colunas
@@ -45,15 +41,12 @@ def load_and_clean_data(file):
         # Converte o DataFrame para tipo numérico, tratando erros e removendo NaN
         df = df.apply(pd.to_numeric, errors='coerce').dropna()
         
-        # O "Ensaio" agora será o nosso ponto de referência para identificar
-        # as variáveis independentes e dependentes de forma dinâmica
         ensaio_col_index = df.columns.get_loc('Ensaio')
         
-        # As variáveis independentes são as que vêm logo depois da coluna Ensaio
-        # Assume-se que há 3 independentes após 'Ensaio' (índices: +1, +2, +3)
+        # Variáveis independentes (assume-se 3 após 'Ensaio')
         independent_cols = df.columns[ensaio_col_index + 1 : ensaio_col_index + 4].tolist()
         
-        # As variáveis dependentes são as restantes (índices: +4 em diante)
+        # Variáveis dependentes (restantes)
         dependent_cols = df.columns[ensaio_col_index + 4:].tolist()
         
         return df, independent_cols, dependent_cols
@@ -65,11 +58,8 @@ def load_and_clean_data(file):
 
 
 # ==============================================================================
-# 2. FUNÇÕES DE ANÁLISE ESTATÍSTICA (Migrado de analysis.py)
+# 2. FUNÇÕES DE ANÁLISE ESTATÍSTICA
 # ==============================================================================
-
-# Nota: A função 'plot_pareto' foi mantida com o plot, mas não retorna o modelo reduzido. 
-# Para uso no pipeline, usaremos 'selecionar_features_significativas' e 'ajustar_modelo'.
 
 def plot_pareto(df, target: str, features: list, alpha=0.1):
     """Gera o gráfico de Pareto e retorna a tabela ANOVA (função de UI/Visualização)."""
@@ -79,7 +69,7 @@ def plot_pareto(df, target: str, features: list, alpha=0.1):
     anova_df["significativo"] = anova_df["PR(>F)"] <= alpha
     anova_sorted = anova_df.sort_values("sum_sq", ascending=False)
     
-    # Lógica de plotagem (Mantida, pois pode ser chamada pelo app.py)
+    # Lógica de plotagem
     num_significativas = anova_sorted["significativo"].sum()
     cores = ["tab:blue" if sig else "lightgray" for sig in anova_sorted["significativo"]]
     
@@ -102,12 +92,12 @@ def plot_pareto(df, target: str, features: list, alpha=0.1):
         ])
     plt.tight_layout()
     
-    return anova_sorted # Retorna apenas a tabela ANOVA para fins de visualização
+    return anova_sorted 
 
 def selecionar_features_significativas(modelo, p_thresh=0.1):
     """Seleciona as features significativas e não significativas com base nos p-valores."""
     anova = sm.stats.anova_lm(modelo, typ=2).dropna()
-    # Lista de termos significativos (incluindo o Intercept, se presente)
+    # Termos significativos
     significantes = anova[anova['PR(>F)'] <= p_thresh].index.tolist()
     # Termos não significativos
     insignificantes = anova[anova['PR(>F)'] > p_thresh].index.tolist()
@@ -115,7 +105,6 @@ def selecionar_features_significativas(modelo, p_thresh=0.1):
 
 def ajustar_modelo(df, target, features):
     """Ajusta um modelo de regressão OLS e retorna o modelo e a ANOVA completa (ANOVA Typ 2)."""
-    # Excluímos o Intercept da lista de features para evitar duplicação na fórmula OLS
     features = [f for f in features if f != 'Intercept']
     
     if not features:
@@ -128,7 +117,7 @@ def ajustar_modelo(df, target, features):
 
 def extrair_variaveis_originais(modelo):
     """
-    Extrai as variáveis originais utilizadas em um modelo statsmodels (considerando termos quadráticos e interações).
+    Extrai as variáveis originais utilizadas em um modelo statsmodels.
     """
     nomes = modelo.model.exog_names
     variaveis = set()
@@ -138,10 +127,8 @@ def extrair_variaveis_originais(modelo):
         elif nome.startswith("I("):
             termo = nome[2:-1]
             tokens = termo.replace("**", " ").split()
-            # Pega o primeiro token como variável base
             variaveis.add(tokens[0])
         elif ":" in nome:
-            # Adiciona ambas as partes da interação
             variaveis.update(nome.split(":"))
         else:
             variaveis.add(nome)
@@ -149,33 +136,30 @@ def extrair_variaveis_originais(modelo):
 
 def avaliar_modelo_anova(modelo, df, target, alpha=0.10):
     """
-    Calcula e retorna as métricas de qualidade do modelo em um dicionário.
-    Inclui métricas de Falta de Ajuste (Lack-of-Fit - LoF).
+    Calcula e retorna as métricas de qualidade do modelo em um dicionário,
+    incluindo Falta de Ajuste (Lack-of-Fit - LoF).
     """
     df = df.copy()
     variaveis_originais = extrair_variaveis_originais(modelo)
     
     # 1. Agrupamento e Cálculo de Média
-    # Agrupamento pelos níveis das variáveis originais (para calcular LoF/PE)
     try:
         grupos = df.groupby(variaveis_originais)
     except Exception:
-        # Se as variáveis originais não formam grupos (ex: regressão contínua pura),
-        # o cálculo LoF/PE não é apropriado, ou o agrupamento falha.
-        # Retornamos métricas padrão sem LoF
+        # Se LoF não for aplicável
         return {
             "R2 (%)": modelo.rsquared * 100, 
             "Significativo": modelo.f_pvalue <= alpha,
             "Predicao Ajustada": "Não Aplicável (dados contínuos)"
-        }
+        }, None, None
 
 
     df["y_medio"] = grupos[target].transform("mean")
     df["y_predito"] = modelo.fittedvalues
 
     # 2. Cálculo das Somas dos Quadrados (SS)
-    SSPE = np.sum((df[target] - df["y_medio"])**2) # Pure Error (Erro Puro)
-    SSLoF = np.sum((df["y_medio"] - df["y_predito"])**2) # Lack of Fit (Falta de Ajuste)
+    SSPE = np.sum((df[target] - df["y_medio"])**2) # Pure Error
+    SSLoF = np.sum((df["y_medio"] - df["y_predito"])**2) # Lack of Fit
     SSE = SSPE + SSLoF # Soma dos Quadrados do Erro (Residuo)
     SSR = np.sum((df["y_predito"] - df[target].mean())**2) # Soma dos Quadrados da Regressão
     SST = SSR + SSE # Soma dos Quadrados Total
@@ -183,7 +167,7 @@ def avaliar_modelo_anova(modelo, df, target, alpha=0.10):
     # 3. Graus de Liberdade (gl)
     N = len(df)
     r = grupos.ngroups # Número de grupos/níveis únicos
-    p = len(modelo.params) # Número de parâmetros no modelo (incluindo intercepto)
+    p = len(modelo.params) # Número de parâmetros no modelo
     gl_PE = N - r # gl do Erro Puro
     gl_LoF = r - p # gl da Falta de Ajuste
     gl_Res = gl_PE + gl_LoF # gl do Resíduo (Erro)
@@ -204,7 +188,7 @@ def avaliar_modelo_anova(modelo, df, target, alpha=0.10):
 
     # 6. R²
     R2 = modelo.rsquared * 100 # R² do Modelo
-    R2_max = (1 - (SSPE / SST)) * 100 if SST != 0 else np.nan # R² Máximo (Ajuste Ideal)
+    R2_max = (1 - (SSPE / SST)) * 100 if SST != 0 else np.nan # R² Máximo
 
     metricas = {
         "R2 (%)": R2, "R2_max (%)": R2_max,
@@ -215,7 +199,6 @@ def avaliar_modelo_anova(modelo, df, target, alpha=0.10):
         "Predicao Ajustada": bool(F_lof < F_tab_lof) if not np.isnan(F_lof) else None
     }
     
-    # Adicionar dados de ANOVA completa e resumo de parâmetros para o LLM
     # A tabela ANOVA completa (Tipo 2)
     anova_completa = sm.stats.anova_lm(modelo, typ=2).fillna(np.nan).to_dict("index")
     
@@ -226,7 +209,7 @@ def avaliar_modelo_anova(modelo, df, target, alpha=0.10):
 
 
 # ==============================================================================
-# 3. FUNÇÕES DE DESEJABILIDADE (Migrado de desejabilidade.py)
+# 3. FUNÇÕES DE DESEJABILIDADE
 # ==============================================================================
 
 # ---------------------------
@@ -243,7 +226,7 @@ def _base_vars_from_model(modelo):
         if name == "Intercept":
             continue
         if name.startswith("I("):
-            inner = name[2:-1]  # ex: tempo**2
+            inner = name[2:-1] 
             var = inner.replace("**", " ").split()[0]
             base.add(var)
         elif ":" in name:
@@ -266,7 +249,7 @@ def _prepare_design_df_from_base(grid_df, modelo, df_ref):
             if b in df_ref.columns:
                 X[b] = df_ref[b].mean()
             else:
-                X[b] = 0.0  # fallback
+                X[b] = 0.0 
 
     # Cria termos do modelo
     for name in modelo.model.exog_names:
@@ -276,9 +259,8 @@ def _prepare_design_df_from_base(grid_df, modelo, df_ref):
             continue
 
         if name.startswith("I("):
-            # exemplo: I(tempo**2)
-            # Eval permite calcular termos como x**2 diretamente
             expr = name[2:-1]
+            # Eval permite calcular termos como x**2 diretamente
             X[name] = eval(expr, {}, {col: X[col] for col in X.columns})
         elif ":" in name:
             a, b = name.split(":")
@@ -294,7 +276,6 @@ def _prepare_design_df_from_base(grid_df, modelo, df_ref):
                 else:
                     X[name] = 0.0
 
-    # Reordenar (opcional)
     needed = [c for c in modelo.model.exog_names if c != "Intercept"]
     cols = [c for c in needed if c in X.columns] + [c for c in X.columns if c not in needed]
     return X[cols]
@@ -313,13 +294,10 @@ def _predict_from_base_grid(modelo, base_grid_df, df_ref):
 def _desejabilidade_scaler(y, L, T, s=1.0, direction="higher"):
     """
     Desejabilidade unidirecional (0..1).
-    direction: 'higher' (quanto maior melhor; s controla forma) ou 'between' (L..T ótimo).
     """
     y = float(y)
     if T == L:
         return 0.0
-    # O seu código original foca em "higher", simplificando a lógica
-    # para ser compatível com a função _make_desirability_function_code
     
     if y < L:
         return 0.0
@@ -329,18 +307,17 @@ def _desejabilidade_scaler(y, L, T, s=1.0, direction="higher"):
 
 def _make_model_function_code(target, modelo):
     """
-    Gera código Python de uma função do modelo:
-    def modelo_<target>(x): ...  # x: dict com variáveis-base
+    Gera código Python de uma função do modelo.
     """
     lines = []
     fname = f"modelo_{target}".replace(" ", "_")
     lines.append(f"def {fname}(x):")
-    lines.append("    \"\"\"")
-    lines.append("    x: dict com variáveis-base (ex.: {'tempo_shaker': ..., 'tempo_ultrassom': ..., 'temperatura': ...})")
-    lines.append("    Retorna a predição do modelo para os valores em x.")
-    lines.append("    \"\"\"")
+    lines.append("    \"\"\"")
+    lines.append("    x: dict com variáveis-base (ex.: {'tempo_shaker': ..., 'tempo_ultrassom': ..., 'temperatura': ...})")
+    lines.append("    Retorna a predição do modelo para os valores em x.")
+    lines.append("    \"\"\"")
     intercept = float(modelo.params.get("Intercept", 0.0))
-    lines.append(f"    y = {intercept:.10f}")
+    lines.append(f"    y = {intercept:.10f}")
 
     base_vars = _base_vars_from_model(modelo)
     for name, coef in modelo.params.items():
@@ -348,48 +325,45 @@ def _make_model_function_code(target, modelo):
             continue
         coef = float(coef)
         if name.startswith("I("):
-            inner = name[2:-1]  # ex: tempo_shaker**2
+            inner = name[2:-1] 
             expr = inner
             for b in base_vars:
-                # Substitui a variável de coluna pela chave do dicionário de entrada
                 expr = expr.replace(b, f"x['{b}']") 
-            lines.append(f"    y += ({coef:.10f}) * ({expr})")
+            lines.append(f"    y += ({coef:.10f}) * ({expr})")
         elif ":" in name:
             a, b = name.split(":")
-            lines.append(f"    y += ({coef:.10f}) * (x['{a}'] * x['{b}'])")
+            lines.append(f"    y += ({coef:.10f}) * (x['{a}'] * x['{b}'])")
         else:
-            lines.append(f"    y += ({coef:.10f}) * (x['{name}'])")
+            lines.append(f"    y += ({coef:.10f}) * (x['{name}'])")
 
-    lines.append("    return y")
+    lines.append("    return y")
     return "\n".join(lines)
 
 def _make_desirability_function_code(target, L, T):
     """
-    Gera código Python da função de desejabilidade (versão simplificada para 'higher'):
-    def desejabilidade_<target>(y, L=<min>, T=<max>, s=1): ...
+    Gera código Python da função de desejabilidade.
     """
     fname = f"desejabilidade_{target}".replace(" ", "_")
     return f"""def {fname}(y, L={L:.10f}, T={T:.10f}, s=1):
-    \"\"\"
-    Desejabilidade unidirecional para {target} (0..1).
-    L: limite inferior (min observado no dataset)
-    T: limite superior (max observado no dataset)
-    s: parâmetro de forma (default=1)
-    \"\"\"
-    y = float(y)
-    if T == L:
-        return 0.0
-    if y < L:
-        return 0.0
-    if y > T:
-        return 1.0
-    return ((y - L) / (T - L)) ** s
+    \"\"\"
+    Desejabilidade unidirecional para {target} (0..1).
+    L: limite inferior (min observado no dataset)
+    T: limite superior (max observado no dataset)
+    s: parâmetro de forma (default=1)
+    \"\"\"
+    y = float(y)
+    if T == L:
+        return 0.0
+    if y < L:
+        return 0.0
+    if y > T:
+        return 1.0
+    return ((y - L) / (T - L)) ** s
 """
 
 def to_serializable(df_or_none):
     """
-    Converte DataFrame ou None para um formato serializável em JSON, 
-    substituindo NaN por None.
+    Converte DataFrame ou None para um formato serializável em JSON.
     """
     if df_or_none is None:
         return []
@@ -414,8 +388,7 @@ def run_global_desejabilidade_if_applicable(
     desej_col_name="desejabilidade"
 ):
     """
-    Executa a desejabilidade para um target **apenas** se R² >= r2_threshold,
-    e retorna o dicionário estruturado para o LLM.
+    Executa a desejabilidade para um target APENAS se R² >= r2_threshold.
     """
     if modelo_reduzido is None:
         return {
@@ -425,7 +398,7 @@ def run_global_desejabilidade_if_applicable(
             "resultado_df": None,
         }
         
-    r2 = float(modelo_reduzido.rsquared)  # 0..1
+    r2 = float(modelo_reduzido.rsquared) 
     if r2 < r2_threshold:
         return {
             "aplica_desejabilidade": False,
@@ -460,7 +433,7 @@ def run_global_desejabilidade_if_applicable(
     grids = [np.linspace(vmin, vmax, n) for (vmin, vmax, n) in search_spaces.values()]
     combos = list(itertools.product(*grids)) if grids else []
 
-    # Limites L/T do target (mínimo e máximo observados)
+    # Limites L/T do target
     L = float(df[target].min())
     T = float(df[target].max())
     if not np.isfinite(L) or not np.isfinite(T):
@@ -541,11 +514,11 @@ def run_analysis_pipeline(df, independent_cols, dependent_cols, termos_interacao
     # 1. Preparar a lista completa de termos para o modelo polinomial completo
     full_features = independent_cols.copy()
     
-    # Adicionar termos de interação (ex: 'A:B')
+    # Adicionar termos de interação
     if termos_interacao:
         full_features.extend([f"{col1}:{col2}" for i, col1 in enumerate(independent_cols) for col2 in independent_cols[i+1:]])
     
-    # Adicionar termos quadráticos (ex: 'I(A**2)')
+    # Adicionar termos quadráticos
     if termos_quadraticos:
         full_features.extend([f"I({col}**2)" for col in independent_cols])
 
