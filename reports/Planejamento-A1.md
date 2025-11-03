@@ -57,7 +57,6 @@ Ao analisar a variável `CFT_mg_GAE_g`, o Gráfico de Pareto destacou diversos f
 
 Para a variável `DPPH_umol_TE_g`, o Gráfico de Pareto mostrou `Temperatura_C` e `Tempo_Ultrassom_min` como as características mais proeminentes. No entanto, o $R^2$ obtido foi de **32,65%**, indicando uma baixa capacidade preditiva do modelo.
 
-http://googleusercontent.com/image_generation_content/3
 
 ![Análise DPPH](../img/Planejamento-A1/Pareto-DPPH.png)
 
@@ -68,8 +67,6 @@ http://googleusercontent.com/image_generation_content/3
 ### 2.4 Análise da Variável `FT_mg_QE_g`
 
 A análise da variável `FT_mg_QE_g` também apresentou um $R^2$ muito baixo, de apenas **8,45%**. O Gráfico de Pareto indicou que, embora `Temperatura_C` e `Tempo_Ultrassom_min` tivessem alguma influência, a contribuição geral dos fatores para a variabilidade da resposta é mínima.
-
-http://googleusercontent.com/image_generation_content/4
 
 
 ![Análise FT](../img/Planejamento-A1/Pareto-FT.png)
@@ -106,15 +103,13 @@ Para as respostas com $R^2 < 50\%$ (`DPPH_umol_TE_g`, `ABTS_umol_TE_g` e `FT_mg_
 
 * **Ação do LYRA:** Devido ao baixo $R^2$, a **Desejabilidade não foi executada**, e o modelo final foi simplificado para:
 
-${DPPH\_umol\_TE\_g} = 170,6675 - 1,3533 \times \text{Tempo\_Ultrassom\_min} + 1,1115 \times \text{Temperatura\_C}$
+$$
+\text{DPPH\_umol\_TE\_g} = 170.6675 - 1.3533 \times \text{Tempo\_Ultrassom\_min} + 1.1115 \times \text{Temperatura\_C}
+$$
 
-$\mathrm{DPPH\_umol\_TE\_g} = 170,6675 - 1,3533 \times \mathrm{Tempo\_Ultrassom\_min} + 1,1115 \times \mathrm{Temperatura\_C}$
 
-$DPPH_{umol\_TE\_g} = 170,6675 - 1,3533 \times \text{Tempo}_{Ultrassom\_min} + 1,1115 \times \text{Temperatura}_{C}$
 
-$DPPH\_\text{umol\_TE\_g} = 170,6675 - 1,3533 \times \text{Tempo\_Ultrassom\_min} + 1,1115 \times \text{Temperatura\_C}$
 
-$DPPH\_\text{umol\_TE\_g} = 170{,}6675 - 1{,}3533 \times \text{Tempo\_Ultrassom\_min} + 1{,}1115 \times \text{Temperatura\_C}$
 
 
 #### **B) Análise `ABTS_umol_TE_g` ($R^2 = 22.93\%$)**
