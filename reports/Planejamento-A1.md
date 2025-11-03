@@ -74,11 +74,7 @@ A análise da variável `FT_mg_QE_g` também apresentou um $R^2$ muito baixo, de
 
 **Diagnóstico do LYRA:** Com um $R^2$ tão baixo (`8,45% < 50%`), o sistema identificou que o modelo é **incapaz de predizer adequadamente** a variável `FT_mg_QE_g`. Consequentemente, a desejabilidade **não será executada**, e uma revisão do planejamento experimental é recomendada para esta resposta.
 
----
 
-Entendido! Você enviou todas as imagens restantes do **Planejamento A1**, que cobrem a **Análise de Variância (ANOVA)**, as **Métricas de Qualidade do Modelo**, as **Fórmulas** e a **Otimização por Desejabilidade** para a variável de sucesso (`CFT_mg_GAE_g`).
-
-Vou continuar a construção do `README.md` a partir de onde paramos (após os Paretos).
 
 ---
 
