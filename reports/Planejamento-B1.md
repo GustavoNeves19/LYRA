@@ -73,10 +73,7 @@ A variável `Temperatura_C` é a mais proeminente, mas a contribuição total é
 ![Fórmula e Métricas DPPH: Analise-Modelo-IA-DPPH.png](../img/Planejamento%20B1/Analise-Modelo-IA-DPPH.png)
 
 * **Insight da IA:** O único termo minimamente significativo ($\text{p-valor} = 0.066$) é a interação **Tempo\_shaker\_min:Tempo\_Ultrassom\_min**. O baixo $\text{R}^2$ (apenas **0.34%**) mostra que, embora estatisticamente *existente*, esta interação é **irrelevante** na prática para a variação da resposta.
-* **Modelo Gerado (Simplificado):**
-    $$
-    \text{DPPH\_umol\_TE\_g} = 66.0217 + (-0.0013 \times \text{Tempo\_shaker\_min:Tempo\_Ultrassom\_min})
-    $$
+
 
 #### 3.3 Análise Crítica: `FT_mg_QE_g` ($\text{R}^2 = 9.16\%$)
 
@@ -84,10 +81,7 @@ A variável `Temperatura_C` é a mais proeminente, mas a contribuição total é
 
 ![Fórmula e Métricas FT: Analise-modelo-IA-FT.png](../img/Planejamento%20B1/Analise-modelo-IA-FT.png)
 
-* **Insight da IA:** O único termo significativo é a $\text{Temperatura\_C}$ ($\text{p-valor} = 0.055$). O $\text{R}^2$ de **9.16%** indica que $\text{Temperatura\_C}$ explica menos de 10% da variação total. O modelo limitado se resume a:
-    $$
-    \text{FT\_mg\_QE\_g} = 11.9558 + (0.1960 \times \text{Temperatura\_C})
-    $$
+* **Insight da IA:** O único termo significativo é a $\text{Temperatura\_C}$ ($\text{p-valor} = 0.055$). O $\text{R}^2$ de **9.16%** indica que $\text{Temperatura\_C}$ explica menos de 10% da variação total.
 * **Conclusão da IA:** A regressão é *Não Significativa* (`False`) no teste F global, apesar de o termo $\text{Temperatura\_C}$ ser individualmente significativo.
 
 #### 3.4 Análise Crítica: `ABTS_umol_TE_g` ($\text{R}^2 = 17.11\%$)
