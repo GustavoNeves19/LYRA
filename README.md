@@ -1,282 +1,417 @@
-# 🎓 LYRA: Analisador de Regressão de Aprendizagem e Rendimento
+# 🎓 LYRA
+
+> Sistema inteligente para análise estatística automatizada de planejamentos experimentais, com geração de relatórios técnicos em português usando IA.
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
-[![Framework](https://img.shields.io/badge/Framework-LangChain-green)](https://www.langchain.com/)
-[![Modelo LLM](https://img.shields.io/badge/Modelo-Gemini%202.5%20Flash-red)](https://ai.google.dev/gemini-api/docs/models)
-[![Interface](https://img.shields.io/badge/Interface-Streamlit-orange)](https://streamlit.io/)
+[![Framework](https://img.shields.io/badge/Framework-Streamlit-orange)](https://streamlit.io/)
+[![LLM](https://img.shields.io/badge/LLM-Gemini%202.5%20Flash-red)](https://ai.google.dev/)
+[![Orquestração](https://img.shields.io/badge/Orquestração-LangChain-green)](https://www.langchain.com/)
 
 ---
 
-## 🌟 O Que É LYRA?
+## 📌 Sobre o projeto
 
-**LYRA (Analisador de Regressão de Aprendizagem e Rendimento)** é um sistema de **IA** projetado para automatizar a interpretação e a documentação de análises estatísticas complexas.  
-Ele atua como um **Agente Inteligente**, transformando dados brutos de modelos de regressão, **Análise de Variância (ANOVA)** e **Desejabilidade** em relatórios técnicos detalhados e prontos para uso.
+O **LYRA** é uma aplicação desenvolvida para automatizar a interpretação de resultados estatísticos oriundos de **Planejamento de Experimentos (DOE)**, com foco em:
 
-O projeto utiliza o poder de contexto longo do **Gemini 2.5 Flash** para gerar documentações precisas e personalizadas, eliminando a tarefa repetitiva de escrita técnica.
+- ajuste de **modelos de regressão polinomial**
+- geração de **ANOVA**
+- seleção automática de **features significativas**
+- avaliação da qualidade preditiva do modelo
+- execução de **desejabilidade global**
+- geração de **relatórios técnicos automatizados com IA**
 
----
-
-## 💡 Papel e Funcionalidades
-
-O principal objetivo do LYRA é **otimizar o fluxo de trabalho** de cientistas de dados, engenheiros e pesquisadores, automatizando todo o processo de interpretação estatística.
-
-| Papel/Meta | Funcionalidade Chave |
-| :--- | :--- |
-| **Análise de Dados** | Carrega dados, executa Análise de Regressão e ANOVA (usando pacotes estatísticos Python). |
-| **Geração de Relatório** | Utiliza **Agentes Inteligentes** (LangChain + Gemini) para interpretar os resultados estatísticos e gerar respostas em JSON. |
-| **Saída Técnica** | Gera relatórios técnicos em português, incluindo: Fórmulas, Tabelas ANOVA, Métricas ($R^2$, LoF) e Desejabilidade. |
-| **Interface** | Apresenta os resultados de forma interativa através de uma interface **Streamlit**. |
+A proposta do projeto é reduzir o esforço manual de análise e documentação técnica, transformando saídas estatísticas em relatórios claros, estruturados e reutilizáveis.
 
 ---
 
-## 🧠 Conceitos Fundamentais de Análise
+## 🎯 Objetivo
 
-O LYRA é especializado em **Planejamento de Experimentos (DOE)** e **Regressão Polinomial**, aplicando técnicas estatísticas e visuais de interpretação automatizada.
+O principal objetivo do LYRA é apoiar pesquisadores, analistas e profissionais que trabalham com experimentação e otimização de processos, automatizando etapas que normalmente exigem:
 
----
+- interpretação estatística manual
+- consolidação de métricas do modelo
+- identificação de variáveis relevantes
+- análise de preditividade
+- elaboração de relatórios técnicos
 
-### 📊 Gráfico de Pareto (Visualização de Significância)
-
-#### 🔍 O que é  
-Uma representação gráfica da **ANOVA**, ilustrando a **contribuição relativa** de cada fator (termo) para a variação total do modelo.  
-Os termos são ordenados pela magnitude da **Soma dos Quadrados (sum_sq)**, seguindo o **Princípio de Pareto** — poucos fatores explicam a maior parte do efeito total.
-
-#### 💡 Cenário de Aplicação  
-Usado para **seleção de features**, ajudando o usuário a identificar rapidamente quais fatores são mais importantes e quais podem ser descartados (**redução do modelo**).
-
-#### 🎯 Resultado Esperado  
-Um **gráfico de barras horizontais**, onde termos significativos (p-valor ≤ 0.10) são destacados com cores distintas e uma **linha de corte de significância** é exibida.
-
-![Imagem de Gráfico de Pareto com linha de corte e barras coloridas](./img/Main/Grafico-Pareto.png)
+Com isso, o usuário passa mais tempo analisando decisões e menos tempo escrevendo documentação.
 
 ---
 
-## 📈 Modelo Polinomial (Regressão)
+## 🚀 Principais funcionalidades
 
-### 🔍 O que é  
-Um **modelo de regressão** descreve a relação entre variáveis de entrada (**fatores**) e uma variável de saída (**resposta**).  
-O **modelo polinomial** estende a regressão linear ao incluir termos quadráticos e de interação, modelando **curvaturas e efeitos combinados**.
+### 1. Upload e preparação de dados
 
-### 💡 Cenário de Aplicação  
-Ideal para **otimização de processos**, onde o resultado (ex: rendimento ou qualidade) é influenciado por múltiplos fatores — como **tempo**, **temperatura** e **concentração**.  
-Auxilia na **determinação do ponto ótimo de operação**.
+O sistema permite o envio de arquivos **CSV** e **XLSX**, realizando:
 
-### 🎯 Resultado Esperado  
-Uma **equação polinomial concisa** que permite **prever o valor da variável de saída ($Y$)** com base nas variáveis de entrada ($X$).
+- leitura dos dados
+- limpeza automática dos nomes das colunas
+- conversão numérica
+- separação entre variáveis independentes e dependentes
 
-#### 🧮 Fórmula do Modelo Ajustado
+### 2. Ajuste do modelo estatístico
 
-$$
-\hat{Y} = 45.13 - 0.20(\text{tempo\_shaker}) + 0.001(\text{tempo\_shaker}^2) - 2.98(\text{tempo\_ultrassom}) + 2.22(\text{temperatura}) + 0.014(\text{tempo\_shaker}\times\text{tempo\_ultrassom}) - 0.013(\text{tempo\_shaker}\times\text{temperatura})
-$$
+Para cada variável resposta, o LYRA:
 
-![Imagem do Modelo Polinomial do Planejamento M1](./img/Main/Modelo-Polinomial.png)
+- monta um modelo com termos lineares, quadráticos e de interação
+- ajusta regressão via **OLS**
+- calcula a **ANOVA**
+- identifica os termos estatisticamente significativos
 
----
+### 3. Geração do gráfico de Pareto
 
-## 📊 Análise de Variância (ANOVA)
+O sistema gera visualizações para apoiar a leitura da importância relativa dos termos do modelo, destacando:
 
-### 🔍 O que é  
-Método estatístico usado para decompor a variabilidade total dos dados, isolando a contribuição de cada termo do modelo (**fatores, interações e quadráticos**).  
-O **LYRA** aplica a ANOVA para determinar quais fatores são **estatisticamente significativos**.
+- soma dos quadrados
+- significância estatística
+- linha de corte de significância
 
-### 💡 Cenário de Aplicação  
-Usada **após o ajuste do Modelo Polinomial**, a ANOVA testa a **validade estatística do modelo**.  
-O **Gráfico de Pareto** é uma visualização derivada dessa análise.
+### 4. Redução automática do modelo
 
-### 🎯 Resultado Esperado  
-Uma **tabela detalhada** contendo:  
-- **Soma dos Quadrados (SQ)**  
-- **Graus de Liberdade (gl)**  
-- **Valor F**  
-- **p-valor**
+Após avaliar os p-valores, o sistema:
 
-Um **p-valor ≤ 0.10** indica significância estatística.
+- remove termos não significativos
+- ajusta um modelo reduzido
+- preserva apenas as features relevantes
 
-![Imagem da ANOVA do Planejamento M1](./img/Main/Anova.png)
+### 5. Avaliação de qualidade do modelo
 
----
+O LYRA calcula métricas como:
 
-## 📐 Métricas de Qualidade do Modelo (R², LoF)
+- **R²**
+- **R² máximo**
+- **F_reg**
+- **F_tab_reg**
+- **F_lof**
+- **F_tab_lof**
+- **Significativo**
+- **Predição Ajustada (LoF)**
 
-O LYRA avalia a **qualidade preditiva** do modelo final com base em métricas estatísticas essenciais:
+### 6. Desejabilidade global
 
-| Métrica | Conceito | Resultado Esperado |
-| :--- | :--- | :--- |
-| **$R^2$ (%)** | Coeficiente de determinação. Mede quanto da variabilidade dos dados é explicada pelo modelo. | Quanto mais próximo de $100\%$, melhor o ajuste. |
-| **Significância** | Teste F global. Mede o poder preditivo geral do modelo. | O resultado deve ser **`True`**. |
-| **Predição Ajustada (LoF)** | *Lack-of-Fit*. Verifica se o modelo consegue prever corretamente em relação ao erro puro. | Deve ser **`True`**, indicando validade preditiva. |
+Se o modelo atender ao critério mínimo de qualidade, o sistema executa uma etapa de otimização por desejabilidade, permitindo:
 
----
+- definição de intervalo desejável
+- definição da densidade de busca
+- geração dos melhores cenários dentro do espaço experimental
 
-## 🎯 Desejabilidade Global (Otimização)
+### 7. Geração de relatório com IA
 
-### 🔍 O que é  
-A **Desejabilidade** é uma técnica de **otimização multivariada**, que converte múltiplas respostas em um único índice de desempenho.  
-O **LYRA** realiza uma **Desejabilidade Unidirecional**, buscando **valores máximos** da resposta modelada.
+Ao final da análise, o projeto utiliza **LangChain + Gemini 2.5 Flash** para transformar os resultados em um relatório técnico em português, com:
 
-### 💡 Cenário de Aplicação  
-Aplicada para **encontrar combinações ideais de fatores** (ex: tempo e temperatura) que **maximizam a resposta**, dentro de limites definidos pelo usuário.  
-É a **etapa final do processo de otimização**.
-
-### 📈 Resultado Esperado  
-Uma **tabela de combinações de fatores** que geram os **maiores índices de desejabilidade**, representando o **ponto ótimo de operação**.
-
-#### 📊 Tabela de Desejabilidade — CFT
-
-| Tempo_Shaker | Tempo_Ultrassom | Temperatura | CFT_previsto | Desejabilidade_CFT |
-| :-----------: | :--------------: | :----------: | :-----------: | :----------------: |
-| 49.28 | 17.14 | 50.00 | 76.92 | 0.84 |
-| 68.57 | 10.00 | 44.28 | 73.92 | 0.79 |
-| 49.28 | 12.85 | 40.00 | 71.00 | 0.75 |
-| 87.85 | 11.42 | 50.00 | 67.98 | 0.70 |
-| 30.00 | 15.71 | 35.71 | 64.98 | 0.65 |
-
+- sumário por variável
+- tabela ANOVA
+- interpretação do modelo
+- métricas
+- cenários de otimização
+- texto final estruturado
 
 ---
 
-## 🎯 Cenários de Aplicação e Resultado
+## 🧠 Fluxo da aplicação
 
-O **LYRA** é capaz de identificar automaticamente **cenários experimentais distintos**, apresentando dois tipos principais de resultados:
-
----
-
-### 🧩 1. Planejamento A1 — Sucesso e Otimização Total
-
-#### 📘 Descrição do Cenário
-Cenário ideal, com **alta qualidade preditiva** e resultados passíveis de otimização.
-
-- **$R^2$ Alto** ($R^2 > 80\%$)  
-- **Significância Global:** Verdadeira  
-- **Predição Ajustada (LoF):** True  
-
-#### 📊 Resultados Reportados
-- Fórmula preditiva confiável  
-- Gráfico de Pareto com fatores significativos  
-- Desejabilidade executada com **3 cenários estratégicos**:
-  - 🟢 **Econômico**
-  - 🟡 **Intermediário**
-  - 🔴 **Alta Performance**
-
-
-![Imagem de Relatório de Sucesso (Plano A1) com Cenários de Otimização](./img/Planejamento-A1/Cenários-Desejabilidade.png)
-
----
-
-### ⚠️ 2. Planejamento B1 — Cenário Crítico e Falha de Preditividade
-
-#### 📘 Descrição do Cenário
-Cenário de **baixa predição**, em que os fatores não foram suficientes para modelar a resposta adequadamente.
-
-- **$R^2$ Baixo** ($R^2 < 50\%$)  
-- **Falta de Significância Global**  
-- **Pouca contribuição dos fatores** no Gráfico de Pareto  
-
-#### 🧠 Ação do Agente LYRA
-- **Desejabilidade bloqueada** (não executada).  
-- Emissão de **diagnóstico de risco**, alertando sobre a baixa capacidade preditiva.  
-
-#### 📊 Resultados Reportados
-- Aviso de **Risco Crítico**  
-- Gráfico de Pareto mostrando baixa influência  
-- Mensagem:
-  > “O processo de desejabilidade não será executado.”  
-  Recomenda-se **revisar o planejamento experimental**.
-
-
-![Imagem de Relatório Crítico (Plano B1) com Desejabilidade Bloqueada](./img/Planejamento%20B1/Pareto-FT.png)
-
----
-
-## 💻 Tecnologias Envolvidas
-
-- **LLM Core:** Google **Gemini 2.5 Flash**
-- **Orquestração:** **LangChain**
-- **Ambiente:** Python 3.10+
-- **Interface:** Streamlit
-- **Estatística:** `statsmodels`, `pandas`, `numpy
------
-
-## 📁 Estrutura do Projeto
-
-A lógica do projeto é segregada para garantir modularidade e organização:
-
+```text
+Upload do arquivo
+   ↓
+Limpeza e preparação dos dados
+   ↓
+Identificação de variáveis independentes e dependentes
+   ↓
+Ajuste do modelo completo
+   ↓
+ANOVA + seleção de features significativas
+   ↓
+Ajuste do modelo reduzido
+   ↓
+Avaliação de R², significância e LoF
+   ↓
+Execução de desejabilidade (quando aplicável)
+   ↓
+Geração de relatório final com IA
 ```
+
+---
+
+## 📊 Técnicas e conceitos aplicados
+
+O projeto trabalha com conceitos estatísticos e analíticos como:
+
+- DOE (Design of Experiments)
+- Regressão polinomial
+- ANOVA
+- Seleção de variáveis significativas
+- Lack-of-Fit (LoF)
+- Desejabilidade unidirecional
+- Otimização de respostas
+
+---
+
+## 🛠️ Tecnologias utilizadas
+
+### Interface
+
+- Streamlit
+
+### Processamento e análise de dados
+
+- pandas
+- numpy
+- matplotlib
+- statsmodels
+- scipy
+
+### IA e geração textual
+
+- LangChain
+- Google Gemini 2.5 Flash
+- langchain-google-genai
+
+### Configuração
+
+- python-dotenv
+
+---
+
+## 📁 Estrutura do projeto
+
+```text
 LYRA/
-├── .env                  # Chaves secretas (GOOGLE_API_KEY, etc.)
-├── app.py                # Ponto de entrada da aplicação (Interface Streamlit)
-├── requirements.txt      # Lista de dependências do Python
-├── src/                  # MÓDULOS DE LÓGICA
-│   ├── llm_api.py        # Módulo de LLM: Contém a lógica de prompt (generate_final_prompt) e a chamada de API (get_llm_response)
-│   ├── data_processing.py# Módulo de Dados: Contém as funções de carregamento, análise (ANOVA/Regressão) e deseabilidade.
-│   └── __init__.py       # Marca 'src' como um pacote Python
-├── data/                 # Armazenamento de dados
-│   └── raw/              # Dados brutos de entrada
-└── README.md
+├── app.py
+├── requirements.txt
+├── README.md
+├── .env
+├── src/
+│   ├── __init__.py
+│   ├── llm_api.py
+│   └── analysis_pipeline.py
+└── img/
+    ├── Main/
+    ├── Planejamento-A1/
+    └── Planejamento B1/
 ```
 
------
+### Descrição dos arquivos principais
 
-## 🚀 Como Usar (Setup)
+`app.py`
 
-Siga os passos para configurar e executar o projeto em seu ambiente virtual:
+Arquivo principal da aplicação Streamlit. Responsável por:
 
-### 1\. Clonar o Repositório
+- renderizar a interface
+- receber o arquivo do usuário
+- executar o pipeline de análise
+- acionar a geração do relatório final com IA
+
+`src/analysis_pipeline.py`
+
+Contém a lógica estatística central do projeto:
+
+- carregamento e limpeza dos dados
+- ajuste dos modelos
+- geração da ANOVA
+- seleção de features
+- cálculo das métricas
+- desejabilidade
+- pipeline principal de análise
+
+`src/llm_api.py`
+
+Responsável pela integração com o modelo de linguagem:
+
+- carrega a variável `GOOGLE_API_KEY`
+- inicializa o Gemini
+- monta o prompt técnico
+- envia os resultados da análise para geração do relatório
+
+---
+
+## ⚙️ Requisitos
+
+- Python 3.10 ou superior
+- chave válida da API do Google Gemini
+- ambiente virtual recomendado
+
+---
+
+## 🔐 Variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
+
+```env
+GOOGLE_API_KEY="SUA_CHAVE_AQUI"
+```
+
+---
+
+## 📦 Instalação
+
+### 1. Clone o repositório
 
 ```bash
 git clone https://github.com/GustavoNeves19/LYRA.git
 cd LYRA
 ```
 
-### 2\. Configurar o Ambiente
+### 2. Crie e ative um ambiente virtual
 
-Certifique-se de que seu ambiente virtual (`venv` ou `conda`) está ativo.
+**Windows**
 
 ```bash
-# Se estiver usando venv:
 python -m venv .venv
-.\.venv\Scripts\activate  # (Windows)
-source .venv/bin/activate # (Linux/macOS)
+.venv\Scripts\activate
 ```
 
-### 3\. Instalar Dependências
+**Linux/macOS**
 
-Instale todos os pacotes necessários:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Instale as dependências
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4\. Configurar a API Key
+### 4. Configure a chave da API
 
-Crie um arquivo chamado **`.env`** no diretório raiz do projeto e adicione sua chave de API do Gemini:
+Crie o arquivo `.env` conforme mostrado acima.
 
-```
-# Conteúdo do arquivo .env
-GOOGLE_API_KEY="SUA_CHAVE_GEMINI_AQUI"
-```
-
-### 5\. Executar a Aplicação
-
-Inicie a aplicação Streamlit no terminal:
+### 5. Execute a aplicação
 
 ```bash
 streamlit run app.py
 ```
 
------
+---
 
-## 📈 Resultados Mensuráveis e Tangíveis
+## 🧪 Formato esperado dos dados
 
-O LYRA foi desenvolvido para fornecer valor claro e quantificável em projetos de análise estatística:
+O sistema espera um arquivo com estrutura compatível com o pipeline atual.
 
-| Métrica de Valor | Descrição | Ganho Tangível |
-| :--- | :--- | :--- |
-| **Redução do Tempo de Relatório** | Tempo gasto na redação e formatação de relatórios técnicos de ANOVA. | **Redução de 80%** no tempo de documentação por modelo (de 30 min. para \< 5 min.). |
-| **Aumento de Qualidade (Coerência)** | Consistência e precisão das tabelas e interpretações estatísticas. | **Taxa de erro ou inconsistência documental próxima a 0%**, mantendo a terminologia técnica padrão. |
-| **Capacidade de Contexto** | Habilidade de processar e resumir grandes volumes de dados de análise. | Suporte nativo para geração de relatórios de **15.000 tokens** ou mais (usando o contexto longo do Gemini). |
-| **Eficiência da Análise** | Otimização do tempo de cientistas de dados. | Permite que o analista passe de **foco em escrita** para **foco em otimização de modelo**. |
+### Regras gerais
 
------
+- a leitura usa `header=1`, então o cabeçalho efetivo deve estar na segunda linha
+- deve existir uma coluna chamada `Ensaio`
+- as 3 colunas após `Ensaio` são tratadas como variáveis independentes
+- as colunas restantes são consideradas variáveis dependentes
+- os dados devem ser numéricos ou convertíveis para numérico
 
+### Exemplo conceitual
 
+- Linha 1: metadados / título / observações
+- Linha 2: `Ensaio | Tempo_Shaker | Tempo_Ultrassom | Temperatura | CFT | FT | ...`
+- Linha 3+: dados experimentais
+
+---
+
+## 🖥️ Como usar
+
+1. Execute a aplicação com `streamlit run app.py`
+2. Faça upload do arquivo `.csv` ou `.xlsx`
+3. Revise as variáveis identificadas na interface
+4. Ajuste os parâmetros no menu lateral:
+   - R² mínimo para rodar desejabilidade
+   - intervalo de desejabilidade
+   - número de pontos por variável-base
+5. Clique em **“Iniciar Análise Completa e Gerar Relatório”**
+6. Aguarde a execução das etapas estatísticas
+7. Consulte:
+   - gráficos
+   - métricas
+   - cenários otimizados
+   - relatório final gerado pela IA
+   - prompt técnico usado na geração
+
+---
+
+## 📈 Saídas geradas pelo sistema
+
+O LYRA pode produzir, por variável resposta:
+
+- lista de features significativas e não significativas
+- tabela ANOVA serializada
+- resumo textual do modelo reduzido
+- métricas estatísticas
+- mensagem sobre aplicabilidade da desejabilidade
+- espaço de busca das variáveis
+- função Python do modelo
+- função Python da desejabilidade
+- tabela com combinações otimizadas
+- relatório final textual consolidado
+
+---
+
+## ✅ Regras de decisão implementadas
+
+### Seleção de features
+
+Termos são considerados significativos quando:
+
+- `p-valor <= 0.10`
+
+### Execução da desejabilidade
+
+A desejabilidade só é executada quando:
+
+- `R² >= limiar definido pelo usuário`
+
+Caso contrário, o sistema retorna uma mensagem indicando que o processo de otimização não será executado.
+
+---
+
+## 📍 Diferenciais do projeto
+
+- interface simples para uso prático
+- automatização do fluxo estatístico
+- integração entre análise quantitativa e geração textual
+- relatórios técnicos em português
+- apoio à tomada de decisão em processos experimentais
+- redução do tempo de documentação manual
+
+---
+
+## ⚠️ Limitações atuais
+
+- o pipeline atual assume exatamente 3 variáveis independentes
+- o formato do arquivo precisa seguir a estrutura esperada pelo carregador
+- a desejabilidade atual é unidirecional
+- a execução do relatório depende de chave válida da API Gemini
+- datasets muito fora do padrão podem exigir adaptação do pré-processamento
+
+---
+
+## 🔮 Melhorias futuras
+
+Sugestões de evolução do projeto:
+
+- suporte a número variável de fatores
+- exportação do relatório em PDF ou DOCX
+- histórico de análises
+- painel de comparação entre respostas
+- suporte a múltiplos tipos de desejabilidade
+- validação mais robusta do arquivo de entrada
+- logs de execução e rastreabilidade analítica
+- deploy em ambiente web compartilhado
+
+---
+
+## 👨‍💻 Autor
+
+Gustavo Neves
+
+Projeto desenvolvido com foco em automação de análise estatística, otimização experimental e geração inteligente de documentação técnica.
+
+---
+
+## 📄 Licença
+
+Defina aqui a licença do projeto.
+
+Exemplo:
+
+`MIT License`
+
+Ou, se ainda não houver uma licença definida, mantenha:
+
+`Todos os direitos reservados.`
